@@ -62,6 +62,30 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   }, [hovered, dragged]);
 
   useEffect(() => {
+  const preventTouchScroll = (e) => {
+    if (dragged) e.preventDefault();
+  };
+
+  document.addEventListener('touchmove', preventTouchScroll, { passive: false });
+
+  return () => {
+    document.removeEventListener('touchmove', preventTouchScroll);
+  };
+  }, [dragged]);
+
+  useEffect(() => {
+  const preventTouchStart = (e) => {
+    if (dragged && e.touches.length > 1) e.preventDefault();
+  };
+
+  document.addEventListener('touchstart', preventTouchStart, { passive: false });
+
+  return () => {
+    document.removeEventListener('touchstart', preventTouchStart);
+  };
+  }, [dragged]);
+
+  useEffect(() => {
     const handleResize = () => {
       setIsSmall(window.innerWidth < 1024);
     };
